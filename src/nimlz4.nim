@@ -197,8 +197,8 @@ proc uncompress_frame*(source: var string): string =
       raise newException(LZ4Exception,$error)
   
     # make source into a char ptr
-    var src_size:int = source.len
-    csource = cast[ptr char](alloc0(sizeof(char) * src_size))
+    var src_size: csize_t = source.len.csize_t
+    csource = cast[ptr char](alloc0(sizeof(char) * src_size.int))
     copyMem(csource,addr(source[0]),Natural(src_size))
 
     var start = 0
@@ -217,20 +217,20 @@ proc uncompress_frame*(source: var string): string =
 
     # if frame.contentSize is set, use that
     # else get max frame size from the blockSizeID
-    var dest_size:int
+    var dest_size:csize_t
     var block_size:int
     let content_size = int(frame.contentSize)
     if  content_size > 0:
-      dest_size = content_size
+      dest_size = content_size.csize_t
     else:
       block_size = blockSizeId_to_bytes(frame.blockSizeID)
-      dest_size = block_size
+      dest_size = block_size.csize_t
 
-    dest = cast[ptr char](alloc0(sizeof(char) * dest_size))
+    dest = cast[ptr char](alloc0(sizeof(char) * dest_size.int))
 
     # after calling `LZ4F_getFrameInfo`, we must move
     # to the next bytes
-    start = src_size
+    start = src_size.int
 
     result = newString(dest_size)
     # index of the last element of the result buffer
@@ -254,13 +254,13 @@ proc uncompress_frame*(source: var string): string =
       if hint_src_size_bytes == 0:
         break
 
-      start += stop
+      start += stop.int
       stop = hint_src_size_bytes
 
       moveMem(addr(result[resbeg]),dest,dest_size)
-      resbeg += dest_size 
+      resbeg += dest_size.int
       cumulative_size += dest_size
-      result.setLen(resbeg+dest_size)
+      result.setLen(resbeg+dest_size.int)
       zeroMem(dest,dest_size)
 
     # # we are done, free the context
@@ -274,8 +274,8 @@ proc uncompress_frame*(source: var string): string =
     # when done reading the source buffer, the dest buffer
     # might only be partially-filled. Get exactly
     # how many spaces to chop up from the result buffer
-    let unfilled_space = block_size - dest_size
-    result.setLen(cumulative_size-unfilled_space)
+    let unfilled_space = block_size - dest_size.int
+    result.setLen(cumulative_size-unfilled_space.csize_t)
 
   finally:
     

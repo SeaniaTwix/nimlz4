@@ -221,7 +221,7 @@ proc LZ4_createStream*(): PLZ4Stream {.cdecl, importc: "LZ4_createStream",
 proc LZ4_freeStream*(streamPtr: PLZ4Stream): cint {.cdecl,
     importc: "LZ4_freeStream", dynlib: liblz4.}
 
-proc newPLZ4Stream(stream:var PLZ4Stream):PLZ4Stream =
+proc newPLZ4Stream*(stream:var PLZ4Stream):PLZ4Stream =
   result = LZ4_createStream()
 
 #
