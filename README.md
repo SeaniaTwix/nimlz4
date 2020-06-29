@@ -1,25 +1,29 @@
 # nimlz4
 Nim wrapper for LZ4
 
+## Installation
+> nimble install https://github.com/SeaniaTwix/nimlz4
+
+then apply `requires "nimlz4 >= 0.2.0"` to your `.nimble` file
+
 ## Simple compression (block API)
 Use this API when you don't care about interoperability and assume only
-this wrapper will be used to compress and decompress strings:
+this wrapper will be used to compress and decompress strings
 
-    import lz4
-    var input = readFile("LICENSE")
-    var compressed = compress(input,level=1)
-    var uncompressed = uncompress(compressed)
-    echo(uncompressed==input)
+**not tested**
 
-If you would like a better compression ratio
-at the expense of CPU time, use `compress_more()`. 
-
-## Frame compression (auto-framing API)
+## Frame compression (auto-framing API) - Tested
 Use the frame API when you want your compressed data to be
 decompressable by other programs.
+```nim
+import nimlz4
 
-    import lz4
-    var prefs = newLZ4F_preferences()
-    var compressed = compress_frame(input,prefs)
-    var decompressed = uncompress_frame(compressed)
-    echo(input == decompressed)
+when isMainModule:
+
+  var prefs = newLZ4F_preferences()
+  var s = "tasntrlsdntransotidnpasrdpgsadransotidnpasrdpgsadransotidnpasrdpgsadransotidnpasrdpgsadransotidnpasrdpgsadgrndsalrgnyosaigynhoadsrynhadsroo"
+  var compressed = compress_frame(s, prefs)
+  var decompressed = uncompress_frame(compressed)
+  echo compressed # "M`@�F�tasntrlsdntransotidnpasrdpgsad9�grndsalrgnyosaigynhoadsrynhadsroo
+  echo decompressed # tasntrlsdntransotidnpasrdpgsadransotidnpasrdpgsadransotidnpasrdpgsadransotidnpasrdpgsadransotidnpasrdpgsadgrndsalrgnyosaigynhoadsrynhadsroo
+```
