@@ -156,14 +156,14 @@ proc compress_frame*(source: var string,
   ## Compress an entire string loaded into memory
   ## into a LZ4 frame.
   
-  let source_len = source.len
+  let source_len = source.len.csize_t
   let pprefs = addr(preferences)
   
   let dest_max_size =  LZ4F_compressFrameBound(source_len,pprefs)
   if dest_max_size == 0:
     raise newException(LZ4Exception,"Input size to large")
- 
-  var dest = cast[ptr char](alloc0(sizeof(char) * dest_max_size))
+
+  var dest = cast[ptr char](alloc0(sizeof(char) * dest_max_size.int))
   let bytes_written = LZ4F_compressFrame(dstBuffer=dest,
                                          dstMaxSize=dest_max_size,
                                          srcBuffer=addr(source[0]),
