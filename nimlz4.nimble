@@ -1,6 +1,5 @@
 # Package
 
-name          = "nlz4"
 version       = "0.2.0"
 author        = "Didier Deshommes"
 description   = "Nim wrapper for the LZ4 library"
