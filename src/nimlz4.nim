@@ -2,9 +2,9 @@
 # Nim high-level API to LZ4
 #
 
-import clz4/clz4
-import clz4/clz4frame
-import clz4/clz4hc
+import nimlz4/clz4/clz4
+import nimlz4/clz4/clz4frame
+import nimlz4/clz4/clz4hc
 import sequtils
 
 type

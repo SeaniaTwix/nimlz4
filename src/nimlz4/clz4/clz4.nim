@@ -89,9 +89,11 @@ proc LZ4_decompress_safe*(source: cstring; dest: cstring; compressedSize: cint;
 
 
 
-template LZ4_COMPRESSBOUND*(isize: expr): expr =
-  (if cast[cuint](isize) > cast[cuint](LZ4_MAX_INPUT_SIZE): 0 else: (isize) +
-      ((isize) div 255) + 16)
+template LZ4_COMPRESSBOUND*(isize: untyped): SomeNumber =
+  (if cast[cuint](isize) > cast[cuint](LZ4_MAX_INPUT_SIZE):
+    0
+  else:
+    (isize) + ((isize) div 255) + 16)
 
 #
 #LZ4_compressBound() :
